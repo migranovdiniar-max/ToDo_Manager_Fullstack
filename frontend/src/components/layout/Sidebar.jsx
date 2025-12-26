@@ -1,14 +1,12 @@
 import ThemeSwitch from '../ThemeSwitch';
 
-
 function Sidebar({ filter, setFilter, total, active }) {
   return (
     <aside className="tm-sidebar">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1 className="tm-logo">TASK MANAGER</h1>
         <ThemeSwitch />
       </div>
-      <h1 className="tm-logo">TASK MANAGER</h1>
 
       <div className="tm-filter-group">
         <button

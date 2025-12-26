@@ -1,0 +1,84 @@
+/* Обёртка — кликабельная */
+.theme-switch {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+/* Контейнер переключателя */
+.switch {
+  position: relative;
+  width: 60px;
+  height: 30px;
+  background-color: var(--light-secondary, #CADCAE);
+  border-radius: 30px;
+  transition: background-color 0.3s ease;
+  padding: 0 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+/* Светлая тема — мягкий зеленоватый фон */
+[data-bs-theme='light'] .switch {
+  background-color: #CADCAE;
+}
+
+/* Тёмная тема — тёмный фон с контрастом */
+[data-bs-theme='dark'] .switch {
+  background-color: #444;
+}
+
+/* Иконки: солнце и луна */
+.switch .icon {
+  position: absolute;
+  font-size: 14px;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+}
+
+.switch .sun {
+  left: 8px;
+  opacity: 1;
+}
+
+.switch.dark .sun {
+  opacity: 0.5;
+}
+
+.switch .moon {
+  right: 8px;
+  opacity: 0.5;
+}
+
+.switch.dark .moon {
+  opacity: 1;
+}
+
+/* Ползунок */
+.switch .slider {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 26px;
+  height: 26px;
+  background: #fff;
+  border-radius: 50%;
+  transition: 
+    transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55),
+    background 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+/* В тёмной теме — ползунок сдвигается вправо */
+.switch.dark .slider {
+  transform: translateX(30px);
+  background: #ffb86b; /* акцентный цвет из тёмной темы */
+}
+
+/* Опционально: эффект "bounce" */
+.switch .slider {
+  transform-origin: center;
+}

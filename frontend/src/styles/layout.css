@@ -1,0 +1,103 @@
+/* Общий layout */
+
+.tm-root {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+}
+
+/* Левая панель (sidebar) */
+
+.tm-sidebar {
+  width: 260px;
+  padding: 24px 20px;
+  border-right: 1px solid rgba(148, 163, 184, 0.2);
+  background-color: var(--sidebar-bg, #020617);
+  color: var(--text-color, #e5e7eb);
+  box-sizing: border-box;
+}
+
+.tm-logo {
+  margin: 0 0 24px;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+/* Фильтры */
+
+.tm-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.tm-filter-btn {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-color, #e5e7eb);
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.tm-filter-btn:hover {
+  background: rgba(148, 163, 184, 0.12);
+}
+
+.tm-filter-btn.active {
+  background: var(--primary-btn-bg, #0ea5e9);
+  border-color: var(--primary-btn-bg, #0ea5e9);
+  color: #0f172a;
+}
+
+.tm-summary {
+  font-size: 13px;
+  color: rgba(148, 163, 184, 0.9);
+}
+
+/* Основная область */
+
+.tm-main {
+  flex: 1;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background-color: var(--body-bg, #020617);
+  box-sizing: border-box;
+  align-items: center; /* центрируем контент по горизонтали */
+}
+
+/* Контентные блоки внутри main */
+
+.tm-main > * {
+  width: 100%;
+  max-width: 960px; /* ширина "контентной" колонки */
+}
+
+/* Адаптив */
+
+@media (max-width: 900px) {
+  .tm-root {
+    flex-direction: column;
+  }
+
+  .tm-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .tm-main {
+    padding: 16px;
+  }
+}
