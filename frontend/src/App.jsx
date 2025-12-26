@@ -1,8 +1,9 @@
-import TasksPage from './pages/TasksPage';
+// App.jsx
+import Dashboard from './pages/Dashboard';
 import './App.css';
 
 function App() {
-  return <TasksPage />;
+  return <Dashboard />;
 }
 
 export default App;
