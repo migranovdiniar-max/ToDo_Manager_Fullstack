@@ -1,10 +1,11 @@
+/* tasks.css — Только структура */
+
 .tm-new-task-card,
 .tm-task-list-card {
-  background: rgba(15, 23, 42, 0.9);
   border-radius: 16px;
   padding: 20px 22px;
-  border: 1px solid rgba(148, 163, 184, 0.25);
   box-shadow: 0 18px 45px rgba(15, 23, 42, 0.8);
+  overflow: hidden;
 }
 
 .tm-new-task-card h2,
@@ -13,170 +14,26 @@
   font-size: 18px;
 }
 
-/* Формы */
-
 .tm-form-row {
   margin-bottom: 12px;
 }
 
 .tm-input {
   width: 100%;
-  padding: 9px 11px;
   min-height: 40px;
   border-radius: 10px;
-  border: 1px solid rgba(148, 163, 184, 0.6);
-  background: rgba(15, 23, 42, 0.8);
-  color: #e5e7eb;
   font-size: 14px;
-}
-
-.tm-input:focus {
-  outline: none;
-  border-color: #38bdf8;
-  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.5);
-}
-
-.tm-field label {
-  display: block;
-  font-size: 12px;
-  color: #9ca3af;
-  margin-bottom: 4px;
-}
-
-/* Кнопки */
-
-.tm-btn {
-  border-radius: 9999px;
-  border: none;
-  padding: 0 14px;
-  min-height: 40px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: transform 0.05s ease, box-shadow 0.1s ease, background 0.1s ease;
-}
-
-.tm-btn-primary {
-  background: linear-gradient(135deg, #0ea5e9, #22c55e);
-  color: #0b1120;
-  box-shadow: 0 8px 20px rgba(34, 197, 94, 0.35);
-}
-
-.tm-btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 14px 32px rgba(34, 197, 94, 0.55);
-}
-
-.tm-btn-danger {
-  background: #ef4444;
-  color: #f9fafb;
-}
-
-.tm-btn-danger:hover {
-  background: #dc2626;
-}
-
-.tm-btn-sm {
-  min-height: 32px;
-  padding: 0 12px;
-  font-size: 13px;
-}
-
-/* Список задач */
-
-.tm-task-list-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.tm-task-list {
-  list-style: none;
-  padding: 0;
-  margin: 16px 0 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.tm-task-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(55, 65, 81, 0.9);
-}
-
-.tm-task-main {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-.tm-task-main input[type='checkbox'] {
-  margin-top: 3px;
-}
-
-.tm-task-text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.tm-task-title-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.tm-task-title {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text-color);
-}
-
-.tm-task-title.completed {
-  text-decoration: line-through;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.tm-task-desc {
-  margin: 0;
-  font-size: 13px;
-  color: #9ca3af;
-}
-
-/* Badges и пустое состояние */
-
-.tm-badge {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 9999px;
-  font-size: 11px;
-  background: #0ea5e9;
-  color: #0b1120;
-}
-
-.tm-badge-light {
-  background: rgba(148, 163, 184, 0.18);
-  color: #e5e7eb;
-}
-
-.tm-empty {
-  margin: 16px 0 0;
-  font-size: 14px;
-  color: #9ca3af;
 }
 
 .tm-input[type='date'] {
-  color-scheme: dark;           
+  color-scheme: dark;
+}
+
+:root[data-bs-theme='dark'] .tm-input[type='date'] {
+  color: var(--text-color);
+  background: var(--card-bg);
+  border-color: var(--border-color);
+}
 
 :root[data-bs-theme='dark'] .tm-input[type='date']::-webkit-calendar-picker-indicator {
   filter: invert(1) brightness(1.4);
@@ -188,17 +45,5 @@
 :root[data-bs-theme='dark'] .tm-input[type='date']::-webkit-datetime-edit-month-field,
 :root[data-bs-theme='dark'] .tm-input[type='date']::-webkit-datetime-edit-day-field,
 :root[data-bs-theme='dark'] .tm-input[type='date']::-webkit-datetime-edit-year-field {
-  color: #e5e7eb;
+  color: var(--text-color);
 }
-
-:root[data-bs-theme='dark'] .tm-input[type='date'] {
-  color: #e5e7eb;
-  background: #0b1120;
-  border-color: rgba(148, 163, 184, 0.6);
-}
-
-.tm-input[type='date'] {
-  color-scheme: dark; /
-}
-}
-

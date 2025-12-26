@@ -1,16 +1,15 @@
+/* App.css — Только макет и формы */
+
 .tm-root {
   display: flex;
   min-height: 100vh;
-  color: #e5e7eb;
 }
-
-/* Sidebar */
 
 .tm-sidebar {
   width: 260px;
   padding: 24px 20px;
   border-right: 1px solid rgba(148, 163, 184, 0.2);
-  background: linear-gradient(180deg, #ffffff70, #ffffff50);
+  background: linear-gradient(180deg, #020617, #020617ee);
   box-shadow: 4px 0 30px rgba(15, 23, 42, 0.9);
 }
 
@@ -35,7 +34,6 @@
   border-radius: 8px;
   border: 1px solid transparent;
   background: transparent;
-  color: var(--text-color);
   text-align: left;
   cursor: pointer;
   font-size: 14px;
@@ -46,20 +44,14 @@
 }
 
 .tm-filter-btn.active {
-  background: #0ea5e9;
-  border-color: #38bdf8;
+  background: var(--primary-btn-bg);
+  border-color: var(--primary-btn-bg);
   color: #0f172a;
 }
 
 .tm-summary {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.7);
 }
-:root[data-bs-theme='light'] .tm-summary {
-  color: rgba(0, 0, 0, 0.6);
-}
-
-/* Main area */
 
 .tm-main {
   flex: 1;
@@ -68,26 +60,6 @@
   flex-direction: column;
   gap: 24px;
 }
-
-/* Cards */
-
-.tm-new-task-card,
-.tm-task-list-card {
-  background: rgba(15, 23, 42, 0.9);
-  border-radius: 16px;
-  padding: 20px 22px;
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.8);
-  overflow: hidden;
-}
-
-.tm-new-task-card h2,
-.tm-task-list-card h2 {
-  margin: 0 0 16px;
-  font-size: 18px;
-}
-
-/* Form */
 
 .tm-form-row {
   margin-bottom: 12px;
@@ -100,81 +72,25 @@
 }
 
 .tm-form-row-inline .tm-field {
-  flex: 1;                 /* поле даты растягивается */
+  flex: 1;
 }
 
 .tm-form-row-inline .tm-btn {
-  flex-shrink: 0;          /* кнопка не растягивается */
+  flex-shrink: 0;
 }
-
-.tm-field label {
-  display: block;
-  font-size: 12px;
-  color: #9ca3af;
-  margin-bottom: 4px;
-}
-
-.tm-input {
-  width: 100%;
-  padding: 9px 11px;
-  border-radius: 10px;
-  border: 1px solid rgba(148, 163, 184, 0.6);
-  background: rgba(15, 23, 42, 0.8);
-  color: #e5e7eb;
-  font-size: 14px;
-}
-
-.tm-input:focus {
-  outline: none;
-  border-color: #38bdf8;
-  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.5);
-}
-
-/* Buttons */
 
 .tm-btn {
-  border-radius: 9999px;
-  border: none;
-  padding: 0 14px;          /* меньше горизонтальный отступ */
+  padding: 0 14px;
   min-height: 40px;
-  max-width: 130px;         /* ограничение ширины */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  white-space: nowrap;      /* чтобы текст не переносился */
-  transition: transform 0.05s ease, box-shadow 0.1s ease, background 0.1s ease;
-}
-
-.tm-btn-primary {
-  background: linear-gradient(135deg, #0ea5e9, #22c55e);
-  color: #0b1120;
-  box-shadow: 0 8px 20px rgba(34, 197, 94, 0.35);  /* поменьше тень */
-}
-
-
-.tm-btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 18px 40px rgba(34, 197, 94, 0.6);
-}
-
-.tm-btn-danger {
-  background: #ef4444;
-  color: #f9fafb;
-}
-
-.tm-btn-danger:hover {
-  background: #dc2626;
+  max-width: 130px;
+  white-space: nowrap;
 }
 
 .tm-btn-sm {
-  padding: 6px 12px;
+  min-height: 32px;
+  padding: 0 12px;
   font-size: 13px;
 }
-
-/* Task list */
 
 .tm-task-list-header {
   display: flex;
@@ -198,8 +114,6 @@
   gap: 12px;
   padding: 10px 12px;
   border-radius: 12px;
-  background: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(55, 65, 81, 0.9);
 }
 
 .tm-task-main {
@@ -224,48 +138,25 @@
   gap: 8px;
 }
 
-.tm-task-title {
-  font-size: 15px;
-  font-weight: 500;
-}
-
-.tm-task-title.completed {
-  text-decoration: line-through;
-  color: #9ca3af;
-}
-
-.tm-task-desc {
-  margin: 0;
-  font-size: 13px;
-  color: #9ca3af;
-}
-
-/* Badges */
-
 .tm-badge {
   display: inline-block;
   padding: 2px 8px;
   border-radius: 9999px;
   font-size: 11px;
-  background: #0ea5e9;
-  color: #0b1120;
 }
 
 .tm-badge-light {
-  background: rgba(148, 163, 184, 0.18);
-  color: #e5e7eb;
+  padding: 2px 8px;
+  font-size: 11px;
 }
-
-/* Empty state */
 
 .tm-empty {
   margin: 16px 0 0;
   font-size: 14px;
-  color: #9ca3af;
+  text-align: center;
 }
 
-/* Responsive */
-
+/* Адаптив */
 @media (max-width: 900px) {
   .tm-root {
     flex-direction: column;
@@ -277,6 +168,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 16px;
   }
   .tm-main {
     padding: 16px;

@@ -17,7 +17,7 @@
   --light-card-bg: #FEE8D9;
   --light-border: #CADCAE;
 
-  /* Переменные по умолчанию (тёмная) */
+  /* Переменные по умолчанию */
   --body-bg: var(--dark-body-bg);
   --text-color: var(--dark-text);
   --card-bg: var(--dark-card-bg);
@@ -45,61 +45,60 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* ========== ПРИМЕНЕНИЕ ЦВЕТОВ К ВАШИМ КЛАССАМ ========== */
-
-/* Логотип */
-.tm-logo {
-  color: var(--primary-btn-bg);
-}
-
-/* Кнопки фильтров */
-.tm-filter-btn {
+/* ========== УНИВЕРСАЛЬНЫЕ ТЕКСТОВЫЕ КЛАССЫ ========== */
+.tm-task-title,
+.tm-task-desc,
+.tm-empty,
+.tm-badge-light,
+.tm-field label,
+.tm-summary,
+.tm-filter-btn,
+.tm-input,
+.tm-new-task-card h2,
+.tm-task-list-card h2 {
   color: var(--text-color);
-  border: 1px solid transparent;
-  transition: all 0.2s ease;
 }
 
-.tm-filter-btn:hover {
-  background: rgba(200, 200, 200, 0.15);
+/* Завершённые задачи */
+.tm-task-title.completed {
+  color: rgba(255, 255, 255, 0.5);
 }
 
-.tm-filter-btn.active {
-  background: var(--primary-btn-bg);
-  color: #1a1a1a;
-  border-color: var(--primary-btn-bg);
+:root[data-bs-theme="light"] .tm-task-title.completed {
+  color: #6b7280;
 }
 
-/* Статистика */
-.tm-summary {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 13px;
-}
-
+/* Статистика в сайдбаре */
 :root[data-bs-theme="light"] .tm-summary {
-  color: rgba(0, 0, 0, 0.6);
+  color: #4b5563;
 }
 
-/* Карточки задач */
+/* Для светлой темы — чуть темнее */
+:root[data-bs-theme="light"] .tm-task-desc,
+:root[data-bs-theme="light"] .tm-empty,
+:root[data-bs-theme="light"] .tm-badge-light,
+:root[data-bs-theme="light"] .tm-field label {
+  color: #4b5563;
+}
+
+/* ========== КАРТОЧКИ И ФОРМЫ ========== */
 .tm-new-task-card,
 .tm-task-list-card {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
   border-radius: 16px;
   padding: 20px 22px;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  transition: background-color 0.3s ease;
 }
 
-/* Поля ввода */
 .tm-input {
-  width: 100%;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
   padding: 9px 11px;
   border-radius: 10px;
-  border: 1px solid var(--border-color);
-  background: var(--card-bg);
-  color: var(--text-color);
   font-size: 14px;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .tm-input:focus {
@@ -108,15 +107,12 @@ body {
   box-shadow: 0 0 0 2px rgba(237, 163, 90, 0.3);
 }
 
-/* Кнопки */
+/* ========== КНОПКИ ========== */
 .tm-btn {
   border-radius: 9999px;
   border: none;
   padding: 0 14px;
   min-height: 40px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -137,7 +133,7 @@ body {
 
 .tm-btn-danger {
   background: #ef4444;
-  color: #fff;
+  color: #f9fafb;
 }
 
 .tm-btn-danger:hover {
@@ -149,39 +145,17 @@ body {
   font-size: 13px;
 }
 
-/* Задачи */
+/* ========== ЗАДАЧИ ========== */
 .tm-task-item {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: 12px;
 }
 
-.tm-task-title {
-  color: var(--text-color);
-}
-
-.tm-task-title.completed {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-:root[data-bs-theme="light"] .tm-task-title.completed {
-  color: #6b7280;
-}
-
-.tm-task-desc,
-.tm-empty {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-:root[data-bs-theme="light"] .tm-task-desc,
-:root[data-bs-theme="light"] .tm-empty {
-  color: #6b7280;
-}
-
-/* Бейджи */
+/* ========== БЕЙДЖИ ========== */
 .tm-badge {
   background: var(--primary-btn-bg);
-  color: #1a1a1a;
+  color: #0b1120;
 }
 
 .tm-badge-light {
@@ -189,17 +163,19 @@ body {
   color: var(--text-color);
 }
 
-/* ========== АНИМАЦИИ (сохранены из оригинала) ========== */
+:root[data-bs-theme="light"] .tm-badge-light {
+  background: #e5e7eb;
+  color: #4b5563;
+}
 
-/* Плавные переходы */
+/* ========== АНИМАЦИИ ========== */
 .tm-root,
 .tm-new-task-card,
 .tm-task-list-card,
 .tm-btn,
 .tm-task-item,
 .tm-input,
-.tm-badge,
-.tm-summary {
+.tm-badge {
   transition: 
     background-color 0.3s ease,
     color 0.3s ease,
@@ -208,7 +184,6 @@ body {
     transform 0.2s ease;
 }
 
-/* Анимация кнопок */
 .tm-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -219,7 +194,6 @@ body {
   box-shadow: none;
 }
 
-/* Появление карточек */
 .tm-new-task-card,
 .tm-task-list-card {
   animation: fadeInUp 0.5s ease forwards;
@@ -236,7 +210,7 @@ body {
   }
 }
 
-/* Переключатель темы — bounce */
+/* Переключатель темы */
 .switch .slider {
   transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
