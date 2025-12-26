@@ -20,12 +20,13 @@ def get_task(db: Session, task_id: int):
 
 def toggle_task(db: Session, task_id: int):
     task = db.query(models.Task).filter(models.Task.id == task_id).first()
-
-    if task:
-        task.completed = not task.completed
-        db.commit()
-        db.refresh(task)
+    if task is None:
+        return None
+    task.completed = not task.completed
+    db.commit()
+    db.refresh(task)   # важно, чтобы вернуть обновленное значение
     return task
+
 
 
 def delete_task(db: Session, task_id: int):

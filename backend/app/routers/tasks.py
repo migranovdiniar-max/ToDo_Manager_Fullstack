@@ -22,21 +22,12 @@ def create_task(task: schemas.TaskCreate, db: Session = Depends(get_db)):
 
 
 @router.patch("/{task_id}", response_model=schemas.Task)
-def update_task(
-    task_id: int, 
-    completed: bool | None = None,  # ← Опционально
-    db: Session = Depends(get_db)
-):
-    task = crud.get_task(db, task_id=task_id)
+def toggle_task(task_id: int, db: Session = Depends(get_db)):
+    task = crud.toggle_task(db, task_id=task_id)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
-    
-    if completed is not None:
-        task.completed = completed
-    
-    db.commit()
-    db.refresh(task)
     return task
+
 
 
 

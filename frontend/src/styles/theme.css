@@ -1,0 +1,53 @@
+/* LIGHT THEME */
+:root[data-bs-theme="light"] {
+  --body-bg: #e1e9c9;
+  --text-color: #1a1a1a;
+  --card-bg: #fee8d9;
+  --sidebar-bg: #eda35a;
+  --primary-btn-bg: #eda35a;
+  --primary-btn-hover: #d98d3d;
+}
+
+/* DARK THEME */
+:root[data-bs-theme="dark"] {
+  --body-bg: #020617;
+  --text-color: #e5e7eb;
+  --card-bg: rgba(15, 23, 42, 0.9);
+  --sidebar-bg: #020617;
+  --primary-btn-bg: #0ea5e9;
+  --primary-btn-hover: #0284c7;
+}
+
+/* Применяем к нашему layout */
+
+body {
+  background-color: var(--body-bg);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.tm-root {
+  background-color: var(--body-bg);
+}
+
+.tm-sidebar {
+  background-color: var(--sidebar-bg);
+}
+
+.tm-new-task-card,
+.tm-task-list-card {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+}
+
+/* Кнопки */
+
+.tm-btn-primary {
+  background-color: var(--primary-btn-bg);
+  border: none;
+  color: #fff;
+}
+
+.tm-btn-primary:hover {
+  background-color: var(--primary-btn-hover);
+}
