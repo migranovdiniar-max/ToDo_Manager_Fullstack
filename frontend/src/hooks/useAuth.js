@@ -10,6 +10,7 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // Проверяем токен при загрузке
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -27,11 +28,18 @@ export function useAuth() {
         password,
       });
       const { access_token } = res.data;
+
+      // Сохраняем токен
       localStorage.setItem('token', access_token);
       axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
+
+      // Обновляем состояние → это вызовет перерендер
       setUser({ token: access_token });
+
+      // Можно не вызывать navigate — роутер сам перенаправит
     } catch (err) {
-      setError(err.response?.data?.detail || 'Неверный логин или пароль');
+      console.error('Login error:', err.response?.data || err.message);
+      setError('Неверный логин или пароль');
     }
   };
 
@@ -43,9 +51,11 @@ export function useAuth() {
         email,
         password,
       });
+      // После регистрации — сразу логинимся
       await login(username, password);
     } catch (err) {
-      setError(err.response?.data?.detail || 'Ошибка регистрации');
+      console.error('Register error:', err.response?.data || err.message);
+      setError('Ошибка регистрации');
     }
   };
 

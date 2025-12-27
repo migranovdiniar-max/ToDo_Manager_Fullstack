@@ -18,31 +18,27 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div style={{ textAlign: 'center', marginTop: '100px', fontSize: '18px', color: 'var(--text-color)' }}>
+      <div style={{ textAlign: 'center', marginTop: '100px', fontSize: '18px' }}>
         Загрузка...
       </div>
     );
   }
 
   return (
-    <div className={localStorage.getItem('theme') || 'light'}>
-      <Routes>
-        <Route
-          path="/"
-          element={isAuthenticated ? <Dashboard /> : <Navigate to="/auth" />}
-        />
-
-        <Route
-          path="/auth"
-          element={isAuthenticated ? <Navigate to="/" /> : <AuthPage />}
-        />
-
-        <Route
-          path="*"
-          element={<Navigate to={isAuthenticated ? "/" : "/auth"} />}
-        />
-      </Routes>
-    </div>
+    <Routes>
+      <Route
+        path="/"
+        element={isAuthenticated ? <Dashboard /> : <Navigate to="/auth" />}
+      />
+      <Route
+        path="/auth"
+        element={isAuthenticated ? <Navigate to="/" /> : <AuthPage />}
+      />
+      <Route
+        path="*"
+        element={<Navigate to={isAuthenticated ? "/" : "/auth"} />}
+      />
+    </Routes>
   );
 }
 
