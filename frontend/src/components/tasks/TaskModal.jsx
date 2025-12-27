@@ -14,62 +14,66 @@ function TaskModal({ task, onClose }) {
     if (e.target === e.currentTarget) onClose();
   };
 
+  const isOverdue = task.due_date && 
+    !task.completed && 
+    new Date(task.due_date) < new Date();
+
   return (
     <div
       className="tm-modal-overlay"
       onClick={handleClickOutside}
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(15, 23, 42, 0.8)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 1000,
-        padding: '20px',
-      }}
     >
-      <div
-        className="tm-modal-content"
-        style={{
-          background: 'var(--card-bg)',
-          borderRadius: '16px',
-          border: '1px solid var(--border-color)',
-          maxWidth: '500px',
-          width: '100%',
-          maxHeight: '90vh',
-          overflowY: 'auto',
-          padding: '24px',
-          color: 'var(--text-color)',
-          boxShadow: '0 20px 50px rgba(0, 0, 0, 0.5)',
-        }}
-      >
-        <h3 style={{ margin: '0 0 16px', fontSize: '20px' }}>
-          {task.title}
-        </h3>
+      <div className="tm-modal-content">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+          <h3 style={{ margin: 0, fontSize: '24px', color: 'var(--text-color)' }}>
+            {task.title}
+          </h3>
+          <button
+            onClick={onClose}
+            className="tm-btn tm-btn-sm"
+            style={{ background: 'transparent', color: 'var(--text-color)', border: '1px solid var(--border-color)' }}
+          >
+            ×
+          </button>
+        </div>
 
         {task.description && (
-          <div style={{ marginBottom: '16px', lineHeight: '1.6', fontSize: '14px' }}>
-            <strong>Описание:</strong>
-            <p style={{ margin: '8px 0 0', whiteSpace: 'pre-wrap' }}>
+          <div style={{ marginBottom: '20px', lineHeight: '1.6' }}>
+            <strong style={{ color: 'var(--text-color)', fontSize: '14px' }}>Описание:</strong>
+            <p style={{ 
+              margin: '8px 0 0', 
+              whiteSpace: 'pre-wrap', 
+              color: 'var(--text-color)',
+              fontSize: '14px'
+            }}>
               {task.description}
             </p>
           </div>
         )}
 
-        <div style={{ fontSize: '13px', color: 'var(--text-color)', opacity: 0.8 }}>
-          <div>Дата создания: {new Date(task.created_at || Date.now()).toLocaleDateString('ru-RU')}</div>
-          <div>Дедлайн: {task.due_date ? formatDate(task.due_date) : 'Не указано'}</div>
-          <div>Статус: {task.completed ? '✅ Выполнено' : '⏳ В работе'}</div>
+        <div style={{ 
+          fontSize: '14px', 
+          color: 'var(--text-muted)', 
+          lineHeight: '1.6',
+          background: 'rgba(148, 163, 184, 0.1)',
+          padding: '16px',
+          borderRadius: '8px'
+        }}>
+          <div><strong>Дата создания:</strong> {new Date(task.created_at || Date.now()).toLocaleDateString('ru-RU')}</div>
+          {task.due_date && (
+            <div style={{ color: isOverdue ? '#f87171' : 'var(--text-color)' }}>
+              <strong>Дедлайн:</strong> {formatDate(task.due_date)} {isOverdue && '(просрочено)'}
+            </div>
+          )}
+          <div>
+            <strong>Статус:</strong> {task.completed ? '✅ Выполнено' : '⏳ В работе'}
+          </div>
         </div>
 
         <button
           onClick={onClose}
           className="tm-btn tm-btn-primary tm-btn-sm"
-          style={{ marginTop: '24px' }}
+          style={{ marginTop: '20px', width: '100%' }}
         >
           Закрыть
         </button>

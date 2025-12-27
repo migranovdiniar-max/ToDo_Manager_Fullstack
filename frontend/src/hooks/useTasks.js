@@ -1,86 +1,113 @@
-import { useState, useEffect } from 'react';
+// frontend/src/hooks/useTasks.js
+
+import { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
+
+const API_URL = 'http://localhost:8000/tasks';
+const PAGE_SIZE = 8;
 
 export function useTasks() {
   const [allTasks, setAllTasks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all');
 
+  const [filter, setFilter] = useState('all');
+  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+
+  // Загрузка задач
   useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const res = await axios.get('/tasks/');
-        
-        if (Array.isArray(res.data)) {
-          setAllTasks(res.data);
-        } else if (res.data && Array.isArray(res.data.results)) {
-          setAllTasks(res.data.results);
-        } else {
-          console.warn('Некорректный формат данных:', res.data);
-          setAllTasks([]);
-        }
-      } catch (err) {
-        console.error('Ошибка загрузки задач', err);
-        setAllTasks([]); // ✅ На всякий случай
-        alert('Не удалось загрузить задачи. Проверьте бэкенд.');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchTasks();
   }, []);
 
-  const addTask = async (newTaskData) => {
+  const fetchTasks = async () => {
+    setLoading(true);
     try {
-      const res = await axios.post('/tasks/', {
-        ...newTaskData,
-        completed: false,
-        created_at: new Date().toISOString(),
-      });
-      setAllTasks((prev) => Array.isArray(prev) ? [res.data, ...prev] : [res.data]);
+      const res = await axios.get(`${API_URL}/`);
+      setAllTasks(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
-      console.error('Ошибка добавления задачи', err);
+      console.error('❌ fetchTasks:', err.response?.data || err.message);
+      setAllTasks([]);
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Добавление задачи
+  const addTask = async ({ title, description, dueDate }) => {
+    try {
+      await axios.post(`${API_URL}/`, {
+        title,
+        description: description || null,
+        due_date: dueDate ? new Date(dueDate).toISOString() : null,
+      });
+      fetchTasks(); // Обновляем после добавления
+    } catch (err) {
+      console.error('❌ addTask:', err.response?.data || err.message);
+    }
+  };
+
+  // Переключение статуса
   const toggleTask = async (id) => {
-    const task = allTasks.find(t => t.id === id);
-    if (!task) return;
-
     try {
-      const res = await axios.patch(`/tasks/${id}/`, {
-        completed: !task.completed,
-      });
-      setAllTasks(prev => Array.isArray(prev) ? prev.map(t => t.id === id ? res.data : t) : [res.data]);
+      await axios.patch(`${API_URL}/${id}`);
+      fetchTasks(); // Обновляем список
     } catch (err) {
-      console.error('Ошибка при обновлении задачи', err);
+      console.error('❌ toggleTask:', err.response?.data || err.message);
     }
   };
 
+  // Удаление задачи
   const deleteTask = async (id) => {
     try {
-      await axios.delete(`/tasks/${id}/`);
-      setAllTasks(prev => Array.isArray(prev) ? prev.filter(t => t.id !== id) : []);
+      await axios.delete(`${API_URL}/${id}`);
+      fetchTasks(); // Обновляем
     } catch (err) {
-      console.error('Ошибка при удалении задачи', err);
+      console.error('❌ deleteTask:', err.response?.data || err.message);
     }
   };
 
-  // ✅ Убедимся, что allTasks — массив
-  const validTasks = Array.isArray(allTasks) ? allTasks : [];
+  // 🔍 Фильтрация + поиск
+  const filteredTasks = useMemo(() => {
+    return allTasks.filter((task) => {
+      const matchesSearch =
+        task.title.toLowerCase().includes(search.toLowerCase()) ||
+        (task.description && task.description.toLowerCase().includes(search.toLowerCase()));
 
-  const tasks = validTasks.filter((t) => {
-    if (filter === 'active') return !t.completed;
-    if (filter === 'completed') return t.completed;
-    return true;
-  });
+      const matchesFilter =
+        filter === 'all' ||
+        (filter === 'active' && !task.completed) ||
+        (filter === 'completed' && task.completed);
+
+      return matchesSearch && matchesFilter;
+    });
+  }, [allTasks, search, filter]);
+
+  // 📄 Пагинация
+  const totalPages = Math.max(1, Math.ceil(filteredTasks.length / PAGE_SIZE));
+
+  const tasks = useMemo(() => {
+    const start = (page - 1) * PAGE_SIZE;
+    return filteredTasks.slice(start, start + PAGE_SIZE);
+  }, [filteredTasks, page]);
+
+  // Если страница вышла за пределы — сброс на 1
+  useEffect(() => {
+    if (page > totalPages) {
+      setPage(1);
+    }
+  }, [totalPages, page]);
 
   return {
-    allTasks: validTasks,
+    allTasks,
     tasks,
     loading,
     filter,
     setFilter,
+    search,
+    setSearch,
+    page,
+    totalPages,
+    setPage,
     addTask,
     toggleTask,
     deleteTask,

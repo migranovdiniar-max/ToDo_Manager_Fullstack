@@ -7,7 +7,7 @@ function NewTaskForm({ onAdd }) {
 
   const handleSubmit = () => {
     if (!title.trim()) return;
-    onAdd({ title, description, dueDate });
+    onAdd({ title: title.trim(), description, dueDate });
     setTitle('');
     setDescription('');
     setDueDate('');
@@ -38,20 +38,22 @@ function NewTaskForm({ onAdd }) {
       </div>
 
       <div className="tm-form-row">
-        <label>Дедлайн</label>
-        <div className="tm-date-input-wrapper">
-          <input
-            type="date"
-            className="tm-input tm-input-date"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-          />
-        </div>
+        <label className="tm-field-label">Дедлайн</label>
+        <input
+          type="date"
+          className="tm-input"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
+        />
       </div>
 
       <div className="tm-form-row">
-        <button className="tm-btn tm-btn-primary" onClick={handleSubmit}>
-          Добавить
+        <button 
+          className="tm-btn tm-btn-primary" 
+          onClick={handleSubmit}
+          disabled={!title.trim()}
+        >
+          Добавить задачу
         </button>
       </div>
     </section>
