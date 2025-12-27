@@ -1,13 +1,14 @@
 /* ========== ЦВЕТОВЫЕ ПЕРЕМЕННЫЕ ========== */
 
 :root {
-  /* Тёмная тема по умолчанию */
+  /* Тёмная тема */
   --dark-body-bg: #1c1c1c;
   --dark-text: #f5f5f5;
   --dark-primary: #ffb86b;
   --dark-primary-hover: #e69a50;
   --dark-card-bg: #2a2a2a;
   --dark-border: #444;
+  --dark-sidebar-bg: #1a1a1a;
 
   /* Светлая тема */
   --light-body-bg: #E1E9C9;
@@ -16,6 +17,7 @@
   --light-primary-hover: #d98d3d;
   --light-card-bg: #FEE8D9;
   --light-border: #CADCAE;
+  --light-sidebar-bg: #D4DDB6;
 
   /* Переменные по умолчанию */
   --body-bg: var(--dark-body-bg);
@@ -24,6 +26,7 @@
   --primary-btn-bg: var(--dark-primary);
   --primary-btn-hover: var(--dark-primary-hover);
   --border-color: var(--dark-border);
+  --sidebar-bg: var(--dark-sidebar-bg);
 }
 
 /* ========== СВЕТЛАЯ ТЕМА ========== */
@@ -34,6 +37,7 @@
   --primary-btn-bg: var(--light-primary);
   --primary-btn-hover: var(--light-primary-hover);
   --border-color: var(--light-border);
+  --sidebar-bg: var(--light-sidebar-bg);
 }
 
 /* ========== ОБЩИЙ СТИЛЬ ДЛЯ body ========== */
@@ -55,7 +59,8 @@ body {
 .tm-filter-btn,
 .tm-input,
 .tm-new-task-card h2,
-.tm-task-list-card h2 {
+.tm-task-list-card h2,
+.tm-logo {
   color: var(--text-color);
 }
 
@@ -68,16 +73,12 @@ body {
   color: #6b7280;
 }
 
-/* Статистика в сайдбаре */
-:root[data-bs-theme="light"] .tm-summary {
-  color: #4b5563;
-}
-
 /* Для светлой темы — чуть темнее */
 :root[data-bs-theme="light"] .tm-task-desc,
 :root[data-bs-theme="light"] .tm-empty,
 :root[data-bs-theme="light"] .tm-badge-light,
-:root[data-bs-theme="light"] .tm-field label {
+:root[data-bs-theme="light"] .tm-field label,
+:root[data-bs-theme="light"] .tm-summary {
   color: #4b5563;
 }
 

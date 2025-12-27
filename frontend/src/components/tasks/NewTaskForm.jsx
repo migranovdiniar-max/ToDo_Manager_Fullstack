@@ -39,12 +39,14 @@ function NewTaskForm({ onAdd }) {
 
       <div className="tm-form-row">
         <label>Дедлайн</label>
-        <input
-          type="date"
-          className="tm-input"
-          value={dueDate}
-          onChange={(e) => setDueDate(e.target.value)}
-        />
+        <div className="tm-date-input-wrapper">
+          <input
+            type="date"
+            className="tm-input tm-input-date"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+          />
+        </div>
       </div>
 
       <div className="tm-form-row">

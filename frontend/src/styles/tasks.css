@@ -1,4 +1,4 @@
-/* tasks.css — Только структура */
+/* tasks.css — Только структура и кастомная иконка даты */
 
 .tm-new-task-card,
 .tm-task-list-card {
@@ -23,27 +23,34 @@
   min-height: 40px;
   border-radius: 10px;
   font-size: 14px;
-}
-
-.tm-input[type='date'] {
-  color-scheme: dark;
-}
-
-:root[data-bs-theme='dark'] .tm-input[type='date'] {
-  color: var(--text-color);
+  padding: 9px 11px;
+  border: 1px solid var(--border-color);
   background: var(--card-bg);
-  border-color: var(--border-color);
-}
-
-:root[data-bs-theme='dark'] .tm-input[type='date']::-webkit-calendar-picker-indicator {
-  filter: invert(1) brightness(1.4);
-  cursor: pointer;
-}
-
-:root[data-bs-theme='dark'] .tm-input[type='date']::-webkit-datetime-edit,
-:root[data-bs-theme='dark'] .tm-input[type='date']::-webkit-datetime-edit-text,
-:root[data-bs-theme='dark'] .tm-input[type='date']::-webkit-datetime-edit-month-field,
-:root[data-bs-theme='dark'] .tm-input[type='date']::-webkit-datetime-edit-day-field,
-:root[data-bs-theme='dark'] .tm-input[type='date']::-webkit-datetime-edit-year-field {
   color: var(--text-color);
+}
+
+.tm-input-date {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding-right: 40px !important;
+}
+
+.tm-date-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--text-color);
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.tm-input-date:hover + .tm-date-icon {
+  opacity: 0.9;
+}
+
+.tm-input-date:focus + .tm-date-icon {
+  opacity: 1;
 }

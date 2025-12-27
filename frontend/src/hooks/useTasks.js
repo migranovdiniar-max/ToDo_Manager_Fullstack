@@ -1,71 +1,83 @@
-import { useEffect, useState } from 'react';
-import { tasksApi } from '../api/tasksApi';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 export function useTasks() {
-  const [tasks, setTasks] = useState([]);
-  const [filter, setFilter] = useState('all'); // all | active | completed
-  const [loading, setLoading] = useState(false);
+  const [allTasks, setAllTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const res = await axios.get('/tasks/');
+        
+        if (Array.isArray(res.data)) {
+          setAllTasks(res.data);
+        } else if (res.data && Array.isArray(res.data.results)) {
+          setAllTasks(res.data.results);
+        } else {
+          console.warn('Некорректный формат данных:', res.data);
+          setAllTasks([]);
+        }
+      } catch (err) {
+        console.error('Ошибка загрузки задач', err);
+        setAllTasks([]); // ✅ На всякий случай
+        alert('Не удалось загрузить задачи. Проверьте бэкенд.');
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchTasks();
   }, []);
 
-  const fetchTasks = async () => {
-    setLoading(true);
+  const addTask = async (newTaskData) => {
     try {
-      const { data } = await tasksApi.getAll();
-      setTasks(data);
-    } catch (e) {
-      console.error('Ошибка загрузки:', e.response?.data || e.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const addTask = async ({ title, description, dueDate }) => {
-    if (!title.trim()) return;
-
-    const payload = { title, description: description || undefined };
-
-    if (dueDate) {
-      payload.due_date = new Date(dueDate).toISOString();
-    }
-
-    try {
-      await tasksApi.create(payload);
-      fetchTasks();
-    } catch (e) {
-      console.error('Ошибка создания:', e.response?.data || e.message);
+      const res = await axios.post('/tasks/', {
+        ...newTaskData,
+        completed: false,
+        created_at: new Date().toISOString(),
+      });
+      setAllTasks((prev) => Array.isArray(prev) ? [res.data, ...prev] : [res.data]);
+    } catch (err) {
+      console.error('Ошибка добавления задачи', err);
     }
   };
 
   const toggleTask = async (id) => {
+    const task = allTasks.find(t => t.id === id);
+    if (!task) return;
+
     try {
-      await tasksApi.toggle(id);
-      fetchTasks();
-    } catch (e) {
-      console.error('Ошибка toggle:', e.response?.data || e.message);
+      const res = await axios.patch(`/tasks/${id}/`, {
+        completed: !task.completed,
+      });
+      setAllTasks(prev => Array.isArray(prev) ? prev.map(t => t.id === id ? res.data : t) : [res.data]);
+    } catch (err) {
+      console.error('Ошибка при обновлении задачи', err);
     }
   };
 
   const deleteTask = async (id) => {
     try {
-      await tasksApi.delete(id);
-      fetchTasks();
-    } catch (e) {
-      console.error('Ошибка удаления:', e.response?.data || e.message);
+      await axios.delete(`/tasks/${id}/`);
+      setAllTasks(prev => Array.isArray(prev) ? prev.filter(t => t.id !== id) : []);
+    } catch (err) {
+      console.error('Ошибка при удалении задачи', err);
     }
   };
 
-  const filteredTasks = tasks.filter((t) => {
+  // ✅ Убедимся, что allTasks — массив
+  const validTasks = Array.isArray(allTasks) ? allTasks : [];
+
+  const tasks = validTasks.filter((t) => {
     if (filter === 'active') return !t.completed;
     if (filter === 'completed') return t.completed;
     return true;
   });
 
   return {
-    tasks: filteredTasks,
-    allTasks: tasks,
+    allTasks: validTasks,
+    tasks,
     loading,
     filter,
     setFilter,
