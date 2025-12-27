@@ -2,14 +2,15 @@ import { useState, useEffect } from 'react';
 import PageLayout from '../components/layout/PageLayout';
 import NewTaskForm from '../components/tasks/NewTaskForm';
 import TaskList from '../components/tasks/TaskList';
+import TaskModal from '../components/tasks/TaskModal';
 import { useTasks } from '../hooks/useTasks';
-import { useDebounce } from '../hooks/useDebounce'; 
+import { useDebounce } from '../hooks/useDebounce';
 
 const ITEMS_PER_PAGE = 5;
 
 function Dashboard() {
   const {
-    allTasks,
+    allTasks = [],
     loading,
     filter,
     setFilter,
@@ -20,34 +21,43 @@ function Dashboard() {
 
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedTask, setSelectedTask] = useState(null);
 
   const debouncedSearch = useDebounce(search, 500);
 
-  // Фильтрация и пагинация
+  // Фильтрация
   const filteredTasks = allTasks.filter((t) => {
-    const matchesSearch = t.title.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-                          (t.description || '').toLowerCase().includes(debouncedSearch.toLowerCase());
-    const matchesFilter = filter === 'all' ||
-                          (filter === 'active' && !t.completed) ||
-                          (filter === 'completed' && t.completed);
+    const matchesSearch =
+      t.title.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+      (t.description || '').toLowerCase().includes(debouncedSearch.toLowerCase());
+
+    const matchesFilter =
+      filter === 'all' ||
+      (filter === 'active' && !t.completed) ||
+      (filter === 'completed' && t.completed);
+
     return matchesSearch && matchesFilter;
   });
 
-  const totalPages = Math.ceil(filteredTasks.length / ITEMS_PER_PAGE);
+  const totalPages = Math.max(Math.ceil(filteredTasks.length / ITEMS_PER_PAGE), 1);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedTasks = filteredTasks.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-  // Сброс на 1-ю страницу при изменении фильтра/поиска
+  // Сброс на 1-ю страницу при изменении фильтра/поиска/задач
   useEffect(() => {
     setCurrentPage(1);
-  }, [filter, debouncedSearch]);
+  }, [filter, debouncedSearch, allTasks]);
 
-  // Если на последней странице удалили задачу и нечего показывать — перейти на предыдущую
+  // Если на последней странице удалили задачу — перейти на предыдущую
   useEffect(() => {
     if (currentPage > 1 && paginatedTasks.length === 0) {
       setCurrentPage(prev => prev - 1);
     }
   }, [paginatedTasks.length, currentPage]);
+
+  // Открытие модалки
+  const openModal = (task) => setSelectedTask(task);
+  const closeModal = () => setSelectedTask(null);
 
   return (
     <PageLayout
@@ -74,108 +84,103 @@ function Dashboard() {
         loading={loading}
         onToggle={toggleTask}
         onDelete={deleteTask}
+        openModal={openModal}
       />
 
       {totalPages > 1 && (
-    <div style={{ display: 'flex', justifyContent: 'center', gap: '4px', marginTop: '16px', flexWrap: 'wrap' }}>
-        {/* Кнопка "В начало" и "Назад" */}
-        <button
-        className="tm-btn tm-btn-primary tm-btn-sm"
-        disabled={currentPage === 1}
-        onClick={() => setCurrentPage(1)}
-        style={{ minWidth: '36px' }}
-        aria-label="First page"
-        >
-        «
-        </button>
-        <button
-        className="tm-btn tm-btn-primary tm-btn-sm"
-        disabled={currentPage === 1}
-        onClick={() => setCurrentPage(prev => prev - 1)}
-        style={{ minWidth: '36px' }}
-        aria-label="Previous page"
-        >
-        ‹
-        </button>
-
-        {/* Первые страницы */}
-        {currentPage > 3 && (
-        <>
-            <button
-            className="tm-btn tm-btn-sm"
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '4px', marginTop: '16px', flexWrap: 'wrap' }}>
+          {/* В начало и Назад */}
+          <button
+            className="tm-btn tm-btn-primary tm-btn-sm"
+            disabled={currentPage === 1}
             onClick={() => setCurrentPage(1)}
             style={{ minWidth: '36px' }}
-            >
-            1
-            </button>
-            <span className="tm-text-muted" style={{ alignSelf: 'center', padding: '0 6px' }}>
-            ...
-            </span>
-        </>
-        )}
-
-        {/* Основные страницы: текущая ±1 */}
-        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-        let pageNum;
-        if (totalPages <= 5) {
-            pageNum = i + 1;
-        } else if (currentPage <= 3) {
-            pageNum = i + 1; // 1,2,3,4,5
-        } else if (currentPage >= totalPages - 2) {
-            pageNum = totalPages - 4 + i; // 96,97,98,99,100
-        } else {
-            pageNum = currentPage - 2 + i; // 4,5,6,7,8
-        }
-        return pageNum;
-        }).map((pageNum) => (
-        <button
-            key={pageNum}
-            className={`tm-btn tm-btn-sm ${currentPage === pageNum ? 'tm-btn-primary' : 'tm-btn'}`}
-            onClick={() => setCurrentPage(pageNum)}
+          >
+            «
+          </button>
+          <button
+            className="tm-btn tm-btn-primary tm-btn-sm"
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(prev => prev - 1)}
             style={{ minWidth: '36px' }}
-            aria-current={currentPage === pageNum ? 'page' : undefined}
-        >
-            {pageNum}
-        </button>
-        ))}
+          >
+            ‹
+          </button>
 
-        {/* Последние страницы */}
-        {currentPage < totalPages - 2 && (
-        <>
-            <span className="tm-text-muted" style={{ alignSelf: 'center', padding: '0 6px' }}>
-            ...
-            </span>
+          {/* Первые страницы */}
+          {currentPage > 3 && (
+            <>
+              <button
+                className="tm-btn tm-btn-sm"
+                onClick={() => setCurrentPage(1)}
+                style={{ minWidth: '36px' }}
+              >
+                1
+              </button>
+              <span className="tm-text-muted" style={{ alignSelf: 'center', padding: '0 6px' }}>
+                ...
+              </span>
+            </>
+          )}
+
+          {/* Основные страницы */}
+          {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+            let pageNum;
+            if (totalPages <= 5) pageNum = i + 1;
+            else if (currentPage <= 3) pageNum = i + 1;
+            else if (currentPage >= totalPages - 2) pageNum = totalPages - 4 + i;
+            else pageNum = currentPage - 2 + i;
+            return pageNum;
+          }).map((pageNum) => (
             <button
-            className="tm-btn tm-btn-sm"
+              key={pageNum}
+              className={`tm-btn tm-btn-sm ${currentPage === pageNum ? 'tm-btn-primary' : 'tm-btn'}`}
+              onClick={() => setCurrentPage(pageNum)}
+              style={{ minWidth: '36px' }}
+              aria-current={currentPage === pageNum ? 'page' : undefined}
+            >
+              {pageNum}
+            </button>
+          ))}
+
+          {/* Последние страницы */}
+          {currentPage < totalPages - 2 && (
+            <>
+              <span className="tm-text-muted" style={{ alignSelf: 'center', padding: '0 6px' }}>
+                ...
+              </span>
+              <button
+                className="tm-btn tm-btn-sm"
+                onClick={() => setCurrentPage(totalPages)}
+                style={{ minWidth: '36px' }}
+              >
+                {totalPages}
+              </button>
+            </>
+          )}
+
+          {/* Вперёд и В конец */}
+          <button
+            className="tm-btn tm-btn-primary tm-btn-sm"
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(prev => prev + 1)}
+            style={{ minWidth: '36px' }}
+          >
+            ›
+          </button>
+          <button
+            className="tm-btn tm-btn-primary tm-btn-sm"
+            disabled={currentPage === totalPages}
             onClick={() => setCurrentPage(totalPages)}
             style={{ minWidth: '36px' }}
-            >
-            {totalPages}
-            </button>
-        </>
-        )}
+          >
+            »
+          </button>
+        </div>
+      )}
 
-        {/* Кнопка "Вперёд" и "В конец" */}
-        <button
-        className="tm-btn tm-btn-primary tm-btn-sm"
-        disabled={currentPage === totalPages}
-        onClick={() => setCurrentPage(prev => prev + 1)}
-        style={{ minWidth: '36px' }}
-        aria-label="Next page"
-        >
-        ›
-        </button>
-        <button
-        className="tm-btn tm-btn-primary tm-btn-sm"
-        disabled={currentPage === totalPages}
-        onClick={() => setCurrentPage(totalPages)}
-        style={{ minWidth: '36px' }}
-        aria-label="Last page"
-        >
-        »
-        </button>
-    </div>
-    )}
+      {/* Модалка */}
+      {selectedTask && <TaskModal task={selectedTask} onClose={closeModal} />}
     </PageLayout>
   );
 }

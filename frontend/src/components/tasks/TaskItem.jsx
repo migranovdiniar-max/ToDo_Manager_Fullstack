@@ -1,3 +1,5 @@
+// frontend/src/components/tasks/TaskItem.jsx
+
 import { formatDate } from '../../utils/dateUtils';
 
 function TaskItem({ task, onToggle, onDelete, openModal }) {
@@ -8,7 +10,11 @@ function TaskItem({ task, onToggle, onDelete, openModal }) {
     new Date(task.due_date) < new Date();
 
   return (
-    <li className="tm-task-item" onClick={() => openModal(task)}>
+    <li
+      className="tm-task-item"
+      onClick={() => openModal(task)}
+      style={{ cursor: 'pointer' }}
+    >
       <div className="tm-task-main">
         <input
           type="checkbox"
@@ -33,7 +39,24 @@ function TaskItem({ task, onToggle, onDelete, openModal }) {
           </div>
 
           {task.description && (
-            <p className="tm-task-desc">{task.description}</p>
+            <p
+              className="tm-task-desc"
+              style={{
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                margin: '4px 0 0',
+                fontSize: '13px',
+                lineHeight: '1.4',
+                maxHeight: '2.8em',
+                wordBreak: 'break-word',
+                color: 'var(--text-muted)',
+              }}
+              title={task.description} // Подсказка при наведении
+            >
+              {task.description}
+            </p>
           )}
         </div>
       </div>
