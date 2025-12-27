@@ -1,29 +1,28 @@
-// frontend/src/pages/AuthPage.jsx
-
-import { useState } from 'react';
-import { useAuth } from '../hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
+import '../styles/ThemeSwitch.css';
+import { useState, useEffect } from 'react';
+import { useAuthContext } from '../context/AuthContext';
 
 function AuthPage() {
-  const { login, register, error } = useAuth();
+  const { login, register, error } = useAuthContext();
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isLogin) {
       await login(username, password);
-      if (localStorage.getItem('token')) navigate('/');
     } else {
       await register(username, email, password);
-      if (localStorage.getItem('token')) navigate('/');
     }
   };
 
-  // Переключение темы
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-bs-theme', savedTheme);
+  }, []);
+
   const toggleTheme = () => {
     const current = document.documentElement.getAttribute('data-bs-theme');
     const newTheme = current === 'light' ? 'dark' : 'light';
@@ -31,11 +30,7 @@ function AuthPage() {
     localStorage.setItem('theme', newTheme);
   };
 
-  // Восстановление темы при загрузке
-  document.documentElement.setAttribute(
-    'data-bs-theme',
-    localStorage.getItem('theme') || 'dark'
-  );
+  const currentTheme = document.documentElement.getAttribute('data-bs-theme') || 'dark';
 
   return (
     <div
@@ -50,10 +45,9 @@ function AuthPage() {
       }}
     >
       <div className="tm-new-task-card" style={{ maxWidth: '420px', width: '100%' }}>
-        {/* Переключатель темы */}
         <div style={{ textAlign: 'right', marginBottom: '16px' }}>
           <div className="theme-switch" onClick={toggleTheme} title="Сменить тему">
-            <div className={`switch ${document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'dark' : ''}`}>
+            <div className={`switch ${currentTheme === 'dark' ? 'dark' : ''}`}>
               <span className="icon sun">☀️</span>
               <span className="icon moon">🌙</span>
               <div className="slider"></div>
@@ -132,7 +126,12 @@ function AuthPage() {
               Нет аккаунта?{' '}
               <button
                 onClick={() => setIsLogin(false)}
-                style={{ color: 'var(--primary-btn-bg)', background: 'none', border: 'none', cursor: 'pointer' }}
+                style={{
+                  color: 'var(--primary-btn-bg)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                }}
               >
                 Зарегистрироваться
               </button>
@@ -142,7 +141,12 @@ function AuthPage() {
               Уже есть аккаунт?{' '}
               <button
                 onClick={() => setIsLogin(true)}
-                style={{ color: 'var(--primary-btn-bg)', background: 'none', border: 'none', cursor: 'pointer' }}
+                style={{
+                  color: 'var(--primary-btn-bg)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                }}
               >
                 Войти
               </button>

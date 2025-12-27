@@ -1,5 +1,3 @@
-// frontend/src/hooks/useAuth.js
-
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -10,13 +8,15 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Проверяем токен при загрузке
   useEffect(() => {
     const token = localStorage.getItem('token');
+    const savedUsername = localStorage.getItem('username');
+
     if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      setUser({ token });
+      setUser({ token, username: savedUsername || 'Пользователь' });
     }
+
     setLoading(false);
   }, []);
 
@@ -29,17 +29,13 @@ export function useAuth() {
       });
       const { access_token } = res.data;
 
-      // Сохраняем токен
       localStorage.setItem('token', access_token);
+      localStorage.setItem('username', username);
       axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
 
-      // Обновляем состояние → это вызовет перерендер
-      setUser({ token: access_token });
-
-      // Можно не вызывать navigate — роутер сам перенаправит
+      setUser({ token: access_token, username });
     } catch (err) {
-      console.error('Login error:', err.response?.data || err.message);
-      setError('Неверный логин или пароль');
+      setError(err.response?.data?.detail || 'Неверный логин или пароль');
     }
   };
 
@@ -51,16 +47,15 @@ export function useAuth() {
         email,
         password,
       });
-      // После регистрации — сразу логинимся
       await login(username, password);
     } catch (err) {
-      console.error('Register error:', err.response?.data || err.message);
-      setError('Ошибка регистрации');
+      setError(err.response?.data?.detail || 'Ошибка регистрации');
     }
   };
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('username');
     delete axios.defaults.headers.common['Authorization'];
     setUser(null);
   };

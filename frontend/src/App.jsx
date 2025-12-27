@@ -1,9 +1,7 @@
-// frontend/src/App.jsx
-
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from './hooks/useAuth';
 import Dashboard from './pages/Dashboard';
 import AuthPage from './pages/AuthPage';
+import { useAuthContext } from './context/AuthContext';
 
 function App() {
   return (
@@ -14,30 +12,17 @@ function App() {
 }
 
 function AppContent() {
-  const { isAuthenticated, loading } = useAuth();
+  const { user, loading } = useAuthContext();
 
   if (loading) {
-    return (
-      <div style={{ textAlign: 'center', marginTop: '100px', fontSize: '18px' }}>
-        Загрузка...
-      </div>
-    );
+    return <div style={{ textAlign: 'center', marginTop: '100px' }}>Загрузка...</div>;
   }
 
   return (
     <Routes>
-      <Route
-        path="/"
-        element={isAuthenticated ? <Dashboard /> : <Navigate to="/auth" />}
-      />
-      <Route
-        path="/auth"
-        element={isAuthenticated ? <Navigate to="/" /> : <AuthPage />}
-      />
-      <Route
-        path="*"
-        element={<Navigate to={isAuthenticated ? "/" : "/auth"} />}
-      />
+      <Route path="/" element={user ? <Dashboard /> : <Navigate to="/auth" replace />} />
+      <Route path="/auth" element={user ? <Navigate to="/" replace /> : <AuthPage />} />
+      <Route path="*" element={<Navigate to={user ? "/" : "/auth"} replace />} />
     </Routes>
   );
 }

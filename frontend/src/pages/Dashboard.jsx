@@ -5,10 +5,12 @@ import TaskList from '../components/tasks/TaskList';
 import TaskModal from '../components/tasks/TaskModal';
 import { useTasks } from '../hooks/useTasks';
 import { useDebounce } from '../hooks/useDebounce';
+import { useAuthContext } from '../context/AuthContext';
 
 const ITEMS_PER_PAGE = 5;
 
 function Dashboard() {
+  const { user } = useAuthContext();
   const {
     allTasks = [],
     loading,
@@ -25,17 +27,14 @@ function Dashboard() {
 
   const debouncedSearch = useDebounce(search, 500);
 
-  // Фильтрация
   const filteredTasks = allTasks.filter((t) => {
     const matchesSearch =
       t.title.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
       (t.description || '').toLowerCase().includes(debouncedSearch.toLowerCase());
-
     const matchesFilter =
       filter === 'all' ||
       (filter === 'active' && !t.completed) ||
       (filter === 'completed' && t.completed);
-
     return matchesSearch && matchesFilter;
   });
 
@@ -43,19 +42,13 @@ function Dashboard() {
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedTasks = filteredTasks.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-  // Сброс на 1-ю страницу при изменении фильтра/поиска/задач
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filter, debouncedSearch, allTasks]);
-
-  // Если на последней странице удалили задачу — перейти на предыдущую
+  useEffect(() => setCurrentPage(1), [filter, debouncedSearch, allTasks]);
   useEffect(() => {
     if (currentPage > 1 && paginatedTasks.length === 0) {
-      setCurrentPage(prev => prev - 1);
+      setCurrentPage((prev) => prev - 1);
     }
   }, [paginatedTasks.length, currentPage]);
 
-  // Открытие модалки
   const openModal = (task) => setSelectedTask(task);
   const closeModal = () => setSelectedTask(null);
 
@@ -64,11 +57,20 @@ function Dashboard() {
       filter={filter}
       setFilter={setFilter}
       total={allTasks.length}
-      active={allTasks.filter(t => !t.completed).length}
+      active={allTasks.filter((t) => !t.completed).length}
     >
-      <NewTaskForm onAdd={addTask} />
+      <div
+        style={{
+          fontSize: '18px',
+          fontWeight: '600',
+          color: 'var(--text-color)',
+          marginBottom: '16px',
+        }}
+      >
+        Привет, <strong>{user?.username || 'Пользователь'}!</strong> 🌟
+      </div>
 
-      {/* Поиск */}
+      <NewTaskForm onAdd={addTask} />
       <div className="tm-form-row">
         <input
           type="text"
@@ -88,8 +90,15 @@ function Dashboard() {
       />
 
       {totalPages > 1 && (
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '4px', marginTop: '16px', flexWrap: 'wrap' }}>
-          {/* В начало и Назад */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '4px',
+            marginTop: '16px',
+            flexWrap: 'wrap',
+          }}
+        >
           <button
             className="tm-btn tm-btn-primary tm-btn-sm"
             disabled={currentPage === 1}
@@ -101,29 +110,12 @@ function Dashboard() {
           <button
             className="tm-btn tm-btn-primary tm-btn-sm"
             disabled={currentPage === 1}
-            onClick={() => setCurrentPage(prev => prev - 1)}
+            onClick={() => setCurrentPage((prev) => prev - 1)}
             style={{ minWidth: '36px' }}
           >
             ‹
           </button>
 
-          {/* Первые страницы */}
-          {currentPage > 3 && (
-            <>
-              <button
-                className="tm-btn tm-btn-sm"
-                onClick={() => setCurrentPage(1)}
-                style={{ minWidth: '36px' }}
-              >
-                1
-              </button>
-              <span className="tm-text-muted" style={{ alignSelf: 'center', padding: '0 6px' }}>
-                ...
-              </span>
-            </>
-          )}
-
-          {/* Основные страницы */}
           {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
             let pageNum;
             if (totalPages <= 5) pageNum = i + 1;
@@ -134,21 +126,19 @@ function Dashboard() {
           }).map((pageNum) => (
             <button
               key={pageNum}
-              className={`tm-btn tm-btn-sm ${currentPage === pageNum ? 'tm-btn-primary' : 'tm-btn'}`}
+              className={`tm-btn tm-btn-sm ${
+                currentPage === pageNum ? 'tm-btn-primary' : 'tm-btn'
+              }`}
               onClick={() => setCurrentPage(pageNum)}
               style={{ minWidth: '36px' }}
-              aria-current={currentPage === pageNum ? 'page' : undefined}
             >
               {pageNum}
             </button>
           ))}
 
-          {/* Последние страницы */}
           {currentPage < totalPages - 2 && (
             <>
-              <span className="tm-text-muted" style={{ alignSelf: 'center', padding: '0 6px' }}>
-                ...
-              </span>
+              <span style={{ alignSelf: 'center', padding: '0 6px' }}>...</span>
               <button
                 className="tm-btn tm-btn-sm"
                 onClick={() => setCurrentPage(totalPages)}
@@ -159,11 +149,10 @@ function Dashboard() {
             </>
           )}
 
-          {/* Вперёд и В конец */}
           <button
             className="tm-btn tm-btn-primary tm-btn-sm"
             disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(prev => prev + 1)}
+            onClick={() => setCurrentPage((prev) => prev + 1)}
             style={{ minWidth: '36px' }}
           >
             ›
@@ -179,7 +168,6 @@ function Dashboard() {
         </div>
       )}
 
-      {/* Модалка */}
       {selectedTask && <TaskModal task={selectedTask} onClose={closeModal} />}
     </PageLayout>
   );
