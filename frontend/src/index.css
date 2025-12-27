@@ -1,0 +1,56 @@
+/* frontend/src/index.css */
+
+:root {
+  --text-color: #1f2937;
+  --text-muted: #6b7280;
+  --card-bg: #fff;
+  --bg: #f9fafb;
+  --border-color: #e5e7eb;
+  --primary: #3b82f6;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.dark {
+  --text-color: #f3f4f6;
+  --text-muted: #9ca3af;
+  --card-bg: #1f2937;
+  --bg: #111827;
+  --border-color: #374151;
+  --primary: #60a5fa;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text-color);
+  transition: all 0.3s ease;
+}
+
+html {
+  transition: all 0.3s ease;
+}
+
+.tm-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--card-bg);
+  color: var(--text-color);
+  font-size: 14px;
+}
+
+.tm-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.tm-btn-primary {
+  background: var(--primary);
+  color: white;
+}
