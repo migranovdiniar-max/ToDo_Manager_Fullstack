@@ -16,7 +16,7 @@ Frontend: React, axios, custom hooks (useTasks, useAuth).
 Регистрация и вход пользователя (сессионные куки).
 ![Todo Manager](images/image.png)
 
-
+![Todo Manager](images/image2.png)
 
 Создание, редактирование, удаление задач.
 
