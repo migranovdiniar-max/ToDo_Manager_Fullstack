@@ -18,7 +18,11 @@ Frontend: React, axios, custom hooks (useTasks, useAuth).
 
 ![Todo Manager](images/image2.png)
 
+
+
 Создание, редактирование, удаление задач.
+![Todo Manager](images/image3.png)
+
 
 Флаги выполнения и закрепления задачи.
 
