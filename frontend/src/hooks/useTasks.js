@@ -72,7 +72,15 @@ export function useTasks() {
   };
 
   const filteredTasks = useMemo(() => {
-    return allTasks.filter((task) => {
+    // сортируем: сначала закреплённые, потом по дате создания
+    const sorted = [...allTasks].sort((a, b) => {
+      if (a.is_pinned === b.is_pinned) {
+        return new Date(b.created_at) - new Date(a.created_at);
+      }
+      return a.is_pinned ? -1 : 1;
+    });
+
+    return sorted.filter((task) => {
       const matchesSearch =
         task.title.toLowerCase().includes(search.toLowerCase()) ||
         (task.description &&

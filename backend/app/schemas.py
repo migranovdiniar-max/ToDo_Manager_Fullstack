@@ -6,6 +6,7 @@ class TaskBase(BaseModel):
     title: str
     description: Optional[str] = None
     due_date: Optional[datetime] = None
+    is_pinned: Optional[bool] = False
 
 class TaskCreate(TaskBase):
     pass
@@ -14,6 +15,7 @@ class TaskUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
     due_date: Optional[datetime] = None
+    is_pinned: Optional[bool] = None 
 
 class Task(TaskBase):
     id: int

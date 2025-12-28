@@ -1,6 +1,13 @@
 import TaskItem from './TaskItem';
 
-function TaskList({ tasks, loading, onToggle, onDelete, openModal }) {
+function TaskList({
+  tasks,
+  loading,
+  onToggle,
+  onDelete,
+  openModal,
+  onPinToggle,
+}) {
   if (loading) {
     return (
       <section className="tm-task-list-card">
@@ -27,6 +34,7 @@ function TaskList({ tasks, loading, onToggle, onDelete, openModal }) {
               onToggle={onToggle}
               onDelete={onDelete}
               openModal={openModal}
+              onPinToggle={onPinToggle}
             />
           ))}
         </ul>

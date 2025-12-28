@@ -7,6 +7,7 @@ function TaskModal({ task, onClose, onUpdate }) {
   const [dueDate, setDueDate] = useState(
     task.due_date ? new Date(task.due_date).toISOString().slice(0, 10) : ''
   );
+  const [isPinned, setIsPinned] = useState(task.is_pinned || false);
 
   useEffect(() => {
     setTitle(task.title);
@@ -14,6 +15,7 @@ function TaskModal({ task, onClose, onUpdate }) {
     setDueDate(
       task.due_date ? new Date(task.due_date).toISOString().slice(0, 10) : ''
     );
+    setIsPinned(task.is_pinned || false);
   }, [task]);
 
   useEffect(() => {
@@ -42,7 +44,8 @@ function TaskModal({ task, onClose, onUpdate }) {
     const hasChanges =
       title !== task.title ||
       description !== (task.description || '') ||
-      dueDate !== originalDate;
+      dueDate !== originalDate ||
+      isPinned !== !!task.is_pinned;
 
     if (!hasChanges) {
       onClose();
@@ -53,6 +56,7 @@ function TaskModal({ task, onClose, onUpdate }) {
       title,
       description: description || null,
       due_date: dueDate ? new Date(dueDate).toISOString() : null,
+      is_pinned: isPinned,
     });
 
     onClose();
@@ -161,6 +165,25 @@ function TaskModal({ task, onClose, onUpdate }) {
               {isOverdue && '(просрочено)'}
             </div>
           )}
+        </div>
+
+        {/* чекбокс закрепления */}
+        <div className="tm-form-row">
+          <label
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              fontSize: 14,
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={isPinned}
+              onChange={(e) => setIsPinned(e.target.checked)}
+            />
+            Закрепить задачу
+          </label>
         </div>
 
         <div

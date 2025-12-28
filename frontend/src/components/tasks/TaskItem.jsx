@@ -1,6 +1,6 @@
 import { formatDate } from '../../utils/dateUtils';
 
-function TaskItem({ task, onToggle, onDelete, openModal }) {
+function TaskItem({ task, onToggle, onDelete, openModal, onPinToggle }) {
   const isOverdue =
     task.due_date &&
     !task.completed &&
@@ -24,7 +24,10 @@ function TaskItem({ task, onToggle, onDelete, openModal }) {
         />
 
         <div className="tm-task-text">
-          <div className="tm-task-title-row">
+          <div
+            className="tm-task-title-row"
+            style={{ display: 'flex', alignItems: 'center', gap: 8 }}
+          >
             <span
               className={`tm-task-title ${
                 task.completed ? 'completed' : ''
@@ -32,6 +35,24 @@ function TaskItem({ task, onToggle, onDelete, openModal }) {
             >
               {task.title}
             </span>
+
+            {/* Иконка закрепления */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onPinToggle(task);
+              }}
+              style={{
+                border: 'none',
+                background: 'transparent',
+                cursor: 'pointer',
+                fontSize: '16px',
+              }}
+              title={task.is_pinned ? 'Открепить' : 'Закрепить'}
+            >
+              {task.is_pinned ? '📌' : '📍'}
+            </button>
 
             {task.due_date && (
               <span
