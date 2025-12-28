@@ -21,8 +21,6 @@ Frontend: React, axios, custom hooks (useTasks, useAuth).
 
 
 Создание, редактирование, удаление задач.
-![Todo Manager](images/image3.png)
-
 
 Флаги выполнения и закрепления задачи.
 
@@ -41,41 +39,8 @@ Frontend: React, axios, custom hooks (useTasks, useAuth).
 Фильтры: все / активные / выполненные.
 
 Пагинация списка задач.
+![Todo Manager](images/image3.png)
 
-Структура проекта
-text
-project-root/
-  backend/
-    app/
-      main.py
-      models.py
-      schemas.py
-      database.py
-      routers/
-        auth.py
-        tasks.py
-        categories.py
-        templates.py
-    venv/
-    requirements.txt
-  frontend/
-    src/
-      pages/
-        Dashboard.jsx
-      components/
-        layout/
-          PageLayout.jsx
-          Sidebar.jsx
-        tasks/
-          NewTaskForm.jsx
-          TaskList.jsx
-          TaskModal.jsx
-      hooks/
-        useTasks.js
-        useAuth.js
-      context/
-        AuthContext.js
-    package.json
 
 Запуск backend
 
