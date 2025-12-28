@@ -1,9 +1,19 @@
+// frontend/src/components/layout/Sidebar.jsx
 import ThemeSwitch from '../ThemeSwitch';
+import { useAuthContext } from '../../context/AuthContext';
 
 function Sidebar({ filter, setFilter, total, active }) {
+  const { logout } = useAuthContext();
+
   return (
     <aside className="tm-sidebar">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
         <h1 className="tm-logo">TASK MANAGER</h1>
         <ThemeSwitch />
       </div>
@@ -32,6 +42,16 @@ function Sidebar({ filter, setFilter, total, active }) {
       <p className="tm-summary">
         Всего: {total} · Активных: {active}
       </p>
+
+      {/* Кнопка выхода, не трогающая ThemeSwitch */}
+      <button
+        type="button"
+        className="tm-btn tm-btn-danger tm-btn-sm"
+        onClick={logout}
+        style={{ marginTop: '16px' }}
+      >
+        Выйти
+      </button>
     </aside>
   );
 }

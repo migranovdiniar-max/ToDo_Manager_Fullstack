@@ -48,8 +48,8 @@ function NewTaskForm({ onAdd }) {
       </div>
 
       <div className="tm-form-row">
-        <button 
-          className="tm-btn tm-btn-primary" 
+        <button
+          className="tm-btn tm-btn-primary"
           onClick={handleSubmit}
           disabled={!title.trim()}
         >

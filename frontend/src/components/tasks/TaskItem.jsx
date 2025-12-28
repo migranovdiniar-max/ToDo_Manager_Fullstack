@@ -1,5 +1,3 @@
-// frontend/src/components/tasks/TaskItem.jsx
-
 import { formatDate } from '../../utils/dateUtils';
 
 function TaskItem({ task, onToggle, onDelete, openModal }) {
@@ -27,12 +25,20 @@ function TaskItem({ task, onToggle, onDelete, openModal }) {
 
         <div className="tm-task-text">
           <div className="tm-task-title-row">
-            <span className={`tm-task-title ${task.completed ? 'completed' : ''}`}>
+            <span
+              className={`tm-task-title ${
+                task.completed ? 'completed' : ''
+              }`}
+            >
               {task.title}
             </span>
 
             {task.due_date && (
-              <span className={`tm-badge ${isOverdue ? 'tm-badge-overdue' : 'tm-badge-light'}`}>
+              <span
+                className={`tm-badge ${
+                  isOverdue ? 'tm-badge-overdue' : 'tm-badge-light'
+                }`}
+              >
                 до {formatDate(task.due_date)}
               </span>
             )}
@@ -53,7 +59,7 @@ function TaskItem({ task, onToggle, onDelete, openModal }) {
                 wordBreak: 'break-word',
                 color: 'var(--text-muted)',
               }}
-              title={task.description} // Подсказка при наведении
+              title={task.description}
             >
               {task.description}
             </p>

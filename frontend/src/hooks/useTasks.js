@@ -1,5 +1,3 @@
-// frontend/src/hooks/useTasks.js
-
 import { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 
@@ -14,7 +12,6 @@ export function useTasks() {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
 
-  // Загрузка задач
   useEffect(() => {
     fetchTasks();
   }, []);
@@ -32,7 +29,6 @@ export function useTasks() {
     }
   };
 
-  // Добавление задачи
   const addTask = async ({ title, description, dueDate }) => {
     try {
       await axios.post(`${API_URL}/`, {
@@ -40,38 +36,47 @@ export function useTasks() {
         description: description || null,
         due_date: dueDate ? new Date(dueDate).toISOString() : null,
       });
-      fetchTasks(); // Обновляем после добавления
+      fetchTasks();
     } catch (err) {
       console.error('❌ addTask:', err.response?.data || err.message);
     }
   };
 
-  // Переключение статуса
   const toggleTask = async (id) => {
     try {
       await axios.patch(`${API_URL}/${id}`);
-      fetchTasks(); // Обновляем список
+      fetchTasks();
     } catch (err) {
       console.error('❌ toggleTask:', err.response?.data || err.message);
     }
   };
 
-  // Удаление задачи
   const deleteTask = async (id) => {
     try {
       await axios.delete(`${API_URL}/${id}`);
-      fetchTasks(); // Обновляем
+      fetchTasks();
     } catch (err) {
       console.error('❌ deleteTask:', err.response?.data || err.message);
     }
   };
 
-  // 🔍 Фильтрация + поиск
+  const updateTask = async (id, updates) => {
+    try {
+      await axios.patch(`${API_URL}/${id}/update`, {
+        ...updates,
+      });
+      await fetchTasks();
+    } catch (err) {
+      console.error('❌ updateTask:', err.response?.data || err.message);
+    }
+  };
+
   const filteredTasks = useMemo(() => {
     return allTasks.filter((task) => {
       const matchesSearch =
         task.title.toLowerCase().includes(search.toLowerCase()) ||
-        (task.description && task.description.toLowerCase().includes(search.toLowerCase()));
+        (task.description &&
+          task.description.toLowerCase().includes(search.toLowerCase()));
 
       const matchesFilter =
         filter === 'all' ||
@@ -82,7 +87,6 @@ export function useTasks() {
     });
   }, [allTasks, search, filter]);
 
-  // 📄 Пагинация
   const totalPages = Math.max(1, Math.ceil(filteredTasks.length / PAGE_SIZE));
 
   const tasks = useMemo(() => {
@@ -90,7 +94,6 @@ export function useTasks() {
     return filteredTasks.slice(start, start + PAGE_SIZE);
   }, [filteredTasks, page]);
 
-  // Если страница вышла за пределы — сброс на 1
   useEffect(() => {
     if (page > totalPages) {
       setPage(1);
@@ -111,5 +114,6 @@ export function useTasks() {
     addTask,
     toggleTask,
     deleteTask,
+    updateTask,
   };
 }

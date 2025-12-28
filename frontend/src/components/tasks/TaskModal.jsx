@@ -1,10 +1,21 @@
-// frontend/src/components/tasks/TaskModal.jsx
-
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { formatDate } from '../../utils/dateUtils';
 
-function TaskModal({ task, onClose }) {
-  // Закрытие по Esc
+function TaskModal({ task, onClose, onUpdate }) {
+  const [title, setTitle] = useState(task.title);
+  const [description, setDescription] = useState(task.description || '');
+  const [dueDate, setDueDate] = useState(
+    task.due_date ? new Date(task.due_date).toISOString().slice(0, 10) : ''
+  );
+
+  useEffect(() => {
+    setTitle(task.title);
+    setDescription(task.description || '');
+    setDueDate(
+      task.due_date ? new Date(task.due_date).toISOString().slice(0, 10) : ''
+    );
+  }, [task]);
+
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === 'Escape') onClose();
@@ -13,7 +24,6 @@ function TaskModal({ task, onClose }) {
     return () => document.removeEventListener('keydown', handleEsc);
   }, [onClose]);
 
-  // Закрытие по клику вне карточки
   const handleClickOutside = (e) => {
     if (e.target === e.currentTarget) onClose();
   };
@@ -24,35 +34,49 @@ function TaskModal({ task, onClose }) {
     !isNaN(new Date(task.due_date)) &&
     new Date(task.due_date) < new Date();
 
+  const handleSave = async () => {
+    const originalDate = task.due_date
+      ? new Date(task.due_date).toISOString().slice(0, 10)
+      : '';
+
+    const hasChanges =
+      title !== task.title ||
+      description !== (task.description || '') ||
+      dueDate !== originalDate;
+
+    if (!hasChanges) {
+      onClose();
+      return;
+    }
+
+    await onUpdate(task.id, {
+      title,
+      description: description || null,
+      due_date: dueDate ? new Date(dueDate).toISOString() : null,
+    });
+
+    onClose();
+  };
+
   return (
     <div
       className="tm-modal-overlay"
       onClick={handleClickOutside}
       style={{
-        // ✅ Фиксировано, на весь экран
         position: 'fixed',
         top: 0,
         left: 0,
         width: '100vw',
         height: '100vh',
-
-        // ✅ Центрирование
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-
-        // 🔺 Убрали затемнение
-        // background: 'rgba(0, 0, 0, 0.5)',
-
-        // ✅ Зато добавим прозрачный overlay, чтобы клик вне работал
-        background: 'transparent', // или оставьте очень слабое затемнение: 'rgba(255,255,255,0.8)'
-        backdropFilter: 'blur(2px)', // ✅ Опционально: лёгкий blur-фон
-
+        background: 'transparent',
+        backdropFilter: 'blur(2px)',
         zIndex: 1000,
         padding: '16px',
       }}
     >
-      {/* ✅ Карточка — теперь сама по себе с тенью */}
       <div
         className="tm-modal-card"
         style={{
@@ -61,14 +85,26 @@ function TaskModal({ task, onClose }) {
           borderRadius: '12px',
           width: '100%',
           maxWidth: '480px',
-          boxShadow: '0 4px 24px rgba(0, 0, 0, 0.15)', // Тень вместо фона
+          boxShadow: '0 4px 24px rgba(0, 0, 0, 0.15)',
           position: 'relative',
         }}
       >
-        {/* Заголовок */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <h2 style={{ margin: 0, fontSize: '20px', color: 'var(--text-color, #1f2937)' }}>
-            {task.title}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '16px',
+          }}
+        >
+          <h2
+            style={{
+              margin: 0,
+              fontSize: '20px',
+              color: 'var(--text-color, #1f2937)',
+            }}
+          >
+            Редактирование задачи
           </h2>
           <button
             onClick={onClose}
@@ -86,72 +122,81 @@ function TaskModal({ task, onClose }) {
           </button>
         </div>
 
-        {/* Описание */}
+        <div className="tm-form-row">
+          <label className="tm-field-label">Заголовок</label>
+          <input
+            className="tm-input"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
 
-{task.description && (
-  <div
-    style={{
-      marginBottom: '16px',
-      padding: '12px',
-      border: '1px solid var(--border-color, #e5e7eb)',
-      borderRadius: '8px',
-      background: 'var(--card-bg, #f9fafb)',
-      fontSize: '14px',
-      lineHeight: 1.5,
-      maxHeight: '200px',
-      overflowY: 'auto', // Скролл, если текст длинный
-      color: 'var(--text-color, #374151)',
-    }}
-    className="tm-modal-description"
-  >
-    {task.description}
-  </div>
-)}
+        <div className="tm-form-row">
+          <label className="tm-field-label">Описание</label>
+          <textarea
+            className="tm-input"
+            rows={3}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
 
-        {/* Детали */}
+        <div className="tm-form-row">
+          <label className="tm-field-label">Дедлайн</label>
+          <input
+            type="date"
+            className="tm-input"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+          />
+          {task.due_date && (
+            <div
+              style={{
+                marginTop: '4px',
+                fontSize: '13px',
+                color: isOverdue ? '#f87171' : 'var(--text-muted, #6b7280)',
+              }}
+            >
+              Текущая дата: {formatDate(task.due_date)}{' '}
+              {isOverdue && '(просрочено)'}
+            </div>
+          )}
+        </div>
+
         <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '8px',
+            marginTop: '8px',
             fontSize: '14px',
             color: 'var(--text-muted, #6b7280)',
           }}
         >
-          <div>
-            <strong>Дата создания:</strong>{' '}
-            {new Date(task.created_at).toLocaleDateString('ru-RU')}
-          </div>
-          {task.due_date && (
-            <div style={{ color: isOverdue ? '#f87171' : 'inherit' }}>
-              <strong>Дедлайн:</strong>{' '}
-              {formatDate(task.due_date)} {isOverdue && '(просрочено)'}
-            </div>
-          )}
-          <div>
-            <strong>Статус:</strong>{' '}
-            {task.completed ? '✅ Выполнено' : '⏳ В работе'}
-          </div>
+          <strong>Статус:</strong>{' '}
+          {task.completed ? '✅ Выполнено' : '⏳ В работе'}
         </div>
 
-        {/* Кнопка закрытия */}
-        <button
-          onClick={onClose}
+        <div
           style={{
+            display: 'flex',
+            gap: '8px',
             marginTop: '24px',
-            width: '100%',
-            padding: '12px',
-            background: 'var(--primary, #3b82f6)',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontSize: '16px',
-            fontWeight: '500',
           }}
         >
-          Закрыть
-        </button>
+          <button
+            onClick={handleSave}
+            className="tm-btn tm-btn-primary"
+            style={{ flex: 1 }}
+            disabled={!title.trim()}
+          >
+            Сохранить
+          </button>
+          <button
+            onClick={onClose}
+            className="tm-btn tm-btn-sm"
+            style={{ flex: 1 }}
+          >
+            Отмена
+          </button>
+        </div>
       </div>
     </div>
   );

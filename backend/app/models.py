@@ -13,7 +13,8 @@ class Task(Base):
     completed = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     due_date = Column(DateTime(timezone=True), nullable=True)
-    user_id = Column(Integer, ForeignKey("users.id"))  # ←
+    user_id = Column(Integer, ForeignKey("users.id"))
+    is_pinned = Column(Boolean, default=False) 
 
     user = relationship("User", back_populates="tasks")
 

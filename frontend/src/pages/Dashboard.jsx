@@ -19,6 +19,7 @@ function Dashboard() {
     addTask,
     toggleTask,
     deleteTask,
+    updateTask,
   } = useTasks();
 
   const [search, setSearch] = useState('');
@@ -168,7 +169,7 @@ function Dashboard() {
         </div>
       )}
 
-      {selectedTask && <TaskModal task={selectedTask} onClose={closeModal} />}
+      {selectedTask && <TaskModal task={selectedTask} onClose={closeModal} onUpdate={updateTask} />}
     </PageLayout>
   );
 }
