@@ -1,10 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import tasks, auth
+from app.routers import tasks, auth, categories, task_templates
 
 app = FastAPI(title="Todo API", version="1.0.0")
 
-# Разрешаем фронтенду ходить к бэкенду
 origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
@@ -20,6 +19,9 @@ app.add_middleware(
 
 app.include_router(tasks.router)
 app.include_router(auth.router)
+app.include_router(categories.router)
+app.include_router(task_templates.router)
+
 
 @app.get("/")
 def root():

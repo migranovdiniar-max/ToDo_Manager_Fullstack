@@ -1,4 +1,3 @@
-// frontend/src/components/layout/Sidebar.jsx
 import ThemeSwitch from '../ThemeSwitch';
 import { useAuthContext } from '../../context/AuthContext';
 
@@ -32,7 +31,9 @@ function Sidebar({ filter, setFilter, total, active }) {
           Активные
         </button>
         <button
-          className={`tm-filter-btn ${filter === 'completed' ? 'active' : ''}`}
+          className={`tm-filter-btn ${
+            filter === 'completed' ? 'active' : ''
+          }`}
           onClick={() => setFilter('completed')}
         >
           Выполненные
@@ -43,7 +44,6 @@ function Sidebar({ filter, setFilter, total, active }) {
         Всего: {total} · Активных: {active}
       </p>
 
-      {/* Кнопка выхода, не трогающая ThemeSwitch */}
       <button
         type="button"
         className="tm-btn tm-btn-danger tm-btn-sm"

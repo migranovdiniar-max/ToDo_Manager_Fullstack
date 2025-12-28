@@ -65,6 +65,18 @@ function TaskItem({ task, onToggle, onDelete, openModal, onPinToggle }) {
             )}
           </div>
 
+          {/* Бейдж категории, если есть название */}
+          {task.category_name && (
+            <div style={{ marginTop: 4 }}>
+              <span
+                className="tm-badge tm-badge-light"
+                style={{ marginLeft: 0 }}
+              >
+                {task.category_name}
+              </span>
+            </div>
+          )}
+
           {task.description && (
             <p
               className="tm-task-desc"

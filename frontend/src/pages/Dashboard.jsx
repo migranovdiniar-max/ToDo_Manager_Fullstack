@@ -28,7 +28,7 @@ function Dashboard() {
 
   const debouncedSearch = useDebounce(search, 500);
 
-  // 1) Фильтрация по тексту и статусу
+  // фильтрация только по тексту и статусу
   const filteredTasks = allTasks.filter((t) => {
     const matchesSearch =
       t.title.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
@@ -44,16 +44,15 @@ function Dashboard() {
     return matchesSearch && matchesFilter;
   });
 
-  // 2) Сортировка: закреплённые → незакреплённые, внутри — по дате создания
+  // сортировка: закреплённые выше
   const sortedTasks = [...filteredTasks].sort((a, b) => {
     if (a.is_pinned === b.is_pinned) {
-      // новые выше старых, можно поменять знак, если нужно наоборот
       return new Date(b.created_at) - new Date(a.created_at);
     }
     return a.is_pinned ? -1 : 1;
   });
 
-  // 3) Пагинация после сортировки
+  // пагинация
   const totalPages = Math.max(
     Math.ceil(sortedTasks.length / ITEMS_PER_PAGE),
     1
@@ -65,6 +64,7 @@ function Dashboard() {
   );
 
   useEffect(() => setCurrentPage(1), [filter, debouncedSearch, allTasks]);
+
   useEffect(() => {
     if (currentPage > 1 && paginatedTasks.length === 0) {
       setCurrentPage((prev) => prev - 1);
@@ -78,6 +78,10 @@ function Dashboard() {
     updateTask(task.id, { is_pinned: !task.is_pinned });
   };
 
+  const handleAddTask = ({ title, description, dueDate, categoryId }) => {
+    addTask({ title, description, dueDate, categoryId });
+  };
+
   return (
     <PageLayout
       filter={filter}
@@ -85,6 +89,22 @@ function Dashboard() {
       total={allTasks.length}
       active={allTasks.filter((t) => !t.completed).length}
     >
+      {/* ДИАГНОСТИЧЕСКИЙ БЛОК - УБЕРИ ПОСЛЕ ФИКСА */}
+      <div style={{ 
+        padding: '16px', 
+        background: '#fef3cd', 
+        border: '1px solid #ffeaa7', 
+        borderRadius: '8px', 
+        marginBottom: '16px',
+        fontSize: '14px'
+      }}>
+        <strong>🔍 ДИАГНОСТИКА:</strong><br/>
+        Задач в allTasks: <strong>{allTasks.length}</strong><br/>
+        Loading: <strong>{loading ? 'да' : 'нет'}</strong><br/>
+        Filter: <strong>{filter}</strong><br/>
+        User: <strong>{user?.username || 'нет'}</strong>
+      </div>
+
       <div
         style={{
           fontSize: '18px',
@@ -96,7 +116,7 @@ function Dashboard() {
         Привет, <strong>{user?.username || 'Пользователь'}!</strong> 🌟
       </div>
 
-      <NewTaskForm onAdd={addTask} />
+      <NewTaskForm onAdd={handleAddTask} />
 
       <div className="tm-form-row">
         <input
@@ -117,6 +137,7 @@ function Dashboard() {
         onPinToggle={handlePinToggle}
       />
 
+      {/* пагинация - без изменений */}
       {totalPages > 1 && (
         <div
           style={{
@@ -143,7 +164,6 @@ function Dashboard() {
           >
             ‹
           </button>
-
           {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
             let pageNum;
             if (totalPages <= 5) pageNum = i + 1;
@@ -164,7 +184,6 @@ function Dashboard() {
               {pageNum}
             </button>
           ))}
-
           {currentPage < totalPages - 2 && (
             <>
               <span style={{ alignSelf: 'center', padding: '0 6px' }}>
@@ -179,7 +198,6 @@ function Dashboard() {
               </button>
             </>
           )}
-
           <button
             className="tm-btn tm-btn-primary tm-btn-sm"
             disabled={currentPage === totalPages}
@@ -202,7 +220,7 @@ function Dashboard() {
       {selectedTask && (
         <TaskModal
           task={selectedTask}
-          onClose={closeModal}
+          onClose={() => setSelectedTask(null)}
           onUpdate={updateTask}
         />
       )}
