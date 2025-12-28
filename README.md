@@ -14,6 +14,8 @@ Frontend: React, axios, custom hooks (useTasks, useAuth).
 
 Возможности
 Регистрация и вход пользователя (сессионные куки).
+![Todo Manager Screenshot](https://github.com/migranovdiniar-max/ToDo_Manager_Fullstack/blob/main/image.png?raw=true)
+
 
 Создание, редактирование, удаление задач.
 
